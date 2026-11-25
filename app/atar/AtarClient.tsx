@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Band, GaugeIcon } from "@/components/Band";
-import { COURSES, DATA_YEAR, estimate, getCourse, maxMark, type Entry } from "@/lib/atar";
+import { ALSO_SITS, COURSES, DATA_YEAR, estimate, getCourse, maxMark, prerequisiteNotes, type Entry } from "@/lib/atar";
 
 const KEY = "hscle:atar";
 const REPORT =
@@ -64,13 +64,32 @@ export function AtarClient() {
     .map((r) => ({ course: r.course, mark: Number(r.mark) }));
   const result = useMemo(() => estimate(entries), [JSON.stringify(entries)]); // eslint-disable-line react-hooks/exhaustive-deps
   const units = entries.reduce((n, e) => n + (getCourse(e.course)?.units ?? 0), 0);
+  const chosen = rows.map((r) => r.course).filter(Boolean);
+  const missingAlso = chosen
+    .filter((c) => ALSO_SITS[c])
+    .filter((c) => !entries.some((e) => e.course === ALSO_SITS[c]))
+    .map((c) => `Add your ${ALSO_SITS[c]} mark. ${c} students also get a result in ${ALSO_SITS[c]}, and it counts as 1 more unit.`);
+  const notes = prerequisiteNotes(chosen);
   const problems = [
+    ...missingAlso,
     ...badRows.map((r) => `${r.course} is marked out of ${maxMark(getCourse(r.course)!)}. Check that mark.`),
     ...result.problems,
   ];
   const ready = problems.length === 0;
 
-  const update = (id: number, patch: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  const update = (id: number, patch: Partial<Row>) =>
+    setRows((rs) => {
+      let next = rs.map((r) => (r.id === id ? { ...r, ...patch } : r));
+      // Picking Maths Extension 2 (or English Extension 2) adds the Extension 1 row it always comes with.
+      const also = patch.course ? ALSO_SITS[patch.course] : undefined;
+      if (also && !next.some((r) => r.course === also)) {
+        // Insert it straight below, so the blank rows the student is about to fill stay blank.
+        const at = next.findIndex((r) => r.id === id) + 1;
+        const newId = Math.max(0, ...next.map((r) => r.id)) + 1;
+        next = [...next.slice(0, at), { id: newId, course: also, mark: "" }, ...next.slice(at)];
+      }
+      return next;
+    });
   const add = () => setRows((rs) => [...rs, { id: Math.max(0, ...rs.map((r) => r.id)) + 1, course: "", mark: "" }]);
   const remove = (id: number) => setRows((rs) => rs.filter((r) => r.id !== id));
   const taken = new Set(rows.map((r) => r.course));
@@ -151,12 +170,17 @@ export function AtarClient() {
               <strong className="num">{fmtAtar(result.high)}</strong>. Aggregate{" "}
               <strong className="num">{fmt(result.aggregate)}</strong> out of 500.
             </p>
+            {notes.map((n) => (
+              <p key={n} className="small atar-warn" style={{ margin: "0.5rem 0 0" }}>
+                {n}
+              </p>
+            ))}
           </>
         ) : (
           <>
             <span className="label">Estimated ATAR</span>
             <div className="atar-big num muted">–</div>
-            {problems.map((p) => (
+            {[...problems, ...notes].map((p) => (
               <p key={p} className="muted small" style={{ margin: "0.25rem 0 0" }}>
                 {p}
               </p>
@@ -175,7 +199,7 @@ export function AtarClient() {
           </li>
           <li>
             UAC adds your best 2 units of English and your best 8 other units of scaled marks. That&apos;s your aggregate,
-            out of 500. Part of a 2-unit course can count, just like the real thing.
+            out of 500. Part of a 2-unit course can count, just like the real thing. Maths Extension 2 students also get a Maths Extension 1 result, so enter both.
           </li>
           <li>The aggregate becomes an ATAR using UAC&apos;s published table of aggregates for each ATAR.</li>
         </ol>

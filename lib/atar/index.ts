@@ -136,3 +136,43 @@ export function estimate(entries: Entry[]): Result {
     problems,
   };
 }
+
+/**
+ * NESA course prerequisites: an extension course is only taken alongside these courses.
+ * Any one of the listed courses satisfies the rule.
+ */
+const PREREQUISITES: Record<string, string[]> = {
+  "Mathematics Extension 1": ["Mathematics Advanced", "Mathematics Extension 2"],
+  "Mathematics Extension 2": ["Mathematics Extension 1"],
+  "English Extension 1": ["English Advanced"],
+  "English Extension 2": ["English Extension 1"],
+  "History Extension": ["Ancient History", "Modern History"],
+  "Music Extension": ["Music 2"],
+  "Science Extension": ["Biology", "Chemistry", "Earth & Environmental Science", "Investigating Science", "Physics"],
+  "Chinese Extension": ["Chinese Continuers"],
+  "French Extension": ["French Continuers"],
+  "Japanese Extension": ["Japanese Continuers"],
+};
+
+/**
+ * Courses whose students always get a result in another course too. Maths Extension 2 students also sit
+ * the Extension 1 exam, and English Extension 2 students also take English Extension 1, so that extra
+ * unit is part of their ATAR.
+ */
+export const ALSO_SITS: Record<string, string> = {
+  "Mathematics Extension 2": "Mathematics Extension 1",
+  "English Extension 2": "English Extension 1",
+};
+
+/** Plain-English notes for courses entered without the course NESA requires them to be taken with. */
+export function prerequisiteNotes(courses: string[]): string[] {
+  const have = new Set(courses);
+  const notes: string[] = [];
+  for (const c of courses) {
+    const needs = PREREQUISITES[c];
+    if (!needs || needs.some((n) => have.has(n))) continue;
+    if (ALSO_SITS[c]) continue; // reported separately, as it changes the unit count
+    notes.push(`${c} is taken with ${needs.length === 1 ? needs[0] : `${needs.slice(0, -1).join(", ")} or ${needs[needs.length - 1]}`}. Check your courses.`);
+  }
+  return notes;
+}
