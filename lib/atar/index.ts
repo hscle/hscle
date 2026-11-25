@@ -91,8 +91,20 @@ export interface Entry {
   mark: number;
 }
 
+export interface ResultRow {
+  course: Course;
+  mark: number;
+  /** Units this course is worth in this student's ATAR (Maths Ext 1 is 2 units alongside Ext 2). */
+  units: number;
+  scaled: number;
+  countedUnits: number;
+  /** Why UAC won't count this course at all for this combination of courses, if it won't. */
+  excluded?: string;
+}
+
 export interface Result {
-  rows: { course: Course; mark: number; scaled: number; countedUnits: number }[];
+  rows: ResultRow[];
+  units: number;
   aggregate: number;
   atar: number;
   low: number;
@@ -101,14 +113,27 @@ export interface Result {
 }
 
 export function estimate(entries: Entry[]): Result {
-  const rows = entries
+  const valid = entries
     .map((e) => ({ course: getCourse(e.course), mark: e.mark }))
-    .filter((r): r is { course: Course; mark: number } => !!r.course && Number.isFinite(r.mark))
-    .map((r) => ({ ...r, scaled: scaledMark(r.course, r.mark), countedUnits: 0 }));
+    .filter((r): r is { course: Course; mark: number } => !!r.course && Number.isFinite(r.mark));
+  const have = new Set(valid.map((r) => r.course.name));
+  const hasExt2 = have.has("Mathematics Extension 2") && have.has("Mathematics Extension 1");
+
+  const rows: ResultRow[] = valid.map((r) => {
+    // UAC: with Extension 2, Maths Extension 1 counts as 2 units (its 1-unit scaled mark doubled),
+    // and Mathematics Advanced is no longer included.
+    const units = r.course.name === "Mathematics Extension 1" && hasExt2 ? 2 : r.course.units;
+    const scaled = (scaledMark(r.course, r.mark) / r.course.units) * units;
+    let excluded: string | undefined;
+    if (r.course.name === "Mathematics Advanced" && hasExt2) excluded = "not counted with Ext 2";
+    const needs = PREREQUISITES[r.course.name];
+    if (needs && !needs.some((n) => have.has(n))) excluded = `needs ${needs[0]}`;
+    return { ...r, units, scaled, countedUnits: 0, excluded };
+  });
 
   // Split courses into single units so part of a course can count, as UAC allows.
   const units = rows.flatMap((r, i) =>
-    Array.from({ length: r.course.units }, () => ({ i, value: r.scaled / r.course.units, english: r.course.english })),
+    r.excluded ? [] : Array.from({ length: r.units }, () => ({ i, value: r.scaled / r.units, english: r.course.english })),
   );
   const problems: string[] = [];
   const total = units.length;
@@ -118,7 +143,7 @@ export function estimate(entries: Entry[]): Result {
     problems.push("Add your English course (Standard, Advanced or EAL/D). UAC always counts 2 units of English.");
   if (total < 10)
     problems.push(
-      `You've entered ${total} units. UAC counts 10, so the missing ${10 - total === 1 ? "unit counts" : "units count"} as 0 here and this ATAR is lower than your real one would be.`,
+      `UAC counts 10 units and you have ${total} that count, so the missing ${10 - total === 1 ? "unit counts" : "units count"} as 0 here and this ATAR is lower than your real one would be.`,
     );
 
   const used = new Set<(typeof units)[number]>();
@@ -139,6 +164,7 @@ export function estimate(entries: Entry[]): Result {
   const spread = 0.03 * aggregate;
   return {
     rows,
+    units: total,
     aggregate,
     atar: roundAtar(aggregateToAtar(aggregate)),
     low: roundAtar(aggregateToAtar(aggregate - spread)),
@@ -182,7 +208,7 @@ export function prerequisiteNotes(courses: string[]): string[] {
     const needs = PREREQUISITES[c];
     if (!needs || needs.some((n) => have.has(n))) continue;
     if (ALSO_SITS[c]) continue; // reported separately, as it changes the unit count
-    notes.push(`${c} is taken with ${needs.length === 1 ? needs[0] : `${needs.slice(0, -1).join(", ")} or ${needs[needs.length - 1]}`}. Check your courses.`);
+    notes.push(`${c} isn't counted. UAC only counts it if you also did ${needs.length === 1 ? needs[0] : `${needs.slice(0, -1).join(", ")} or ${needs[needs.length - 1]}`}.`);
   }
   return notes;
 }
