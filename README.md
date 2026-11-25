@@ -1,6 +1,6 @@
 # HSCLE
 
-The daily HSC quiz for NSW students: one exam-style question per subject every day, a practice bank with worked solutions, streaks, achievements and a weekly leaderboard.
+The daily HSC quiz for NSW students: one exam-style question per subject every day, a practice bank with worked solutions, streaks and a weekly leaderboard.
 
 Built with Next.js (static export) + TypeScript, Supabase for accounts and data, hosted on Cloudflare Pages.
 
@@ -11,7 +11,7 @@ Built with Next.js (static export) + TypeScript, Supabase for accounts and data,
 | Daily question per subject (same for everyone, flips at midnight Sydney time, one try) | `app/daily/[subject]`, `lib/daily.ts` |
 | Practice bank with subject, topic and difficulty filters | `app/practice` |
 | Worked solution and "common mistake" for every question | `lib/questions/*.ts` |
-| Streaks, achievements, accuracy by subject and weakest topic | `app/progress`, `lib/progress.ts` |
+| Daily streaks | `lib/progress.ts` |
 | Weekly leaderboard (correct daily answers since Monday, ties go to the longer streak) | `app/leaderboard`, `weekly_leaderboard()` in `supabase/schema.sql` |
 | Accounts with email verification, username and optional school | `app/login`, Supabase Auth |
 | Guest mode: works with no account, progress saved in the browser and carried over on first sign-in | `lib/store.tsx` |

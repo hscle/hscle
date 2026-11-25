@@ -3,7 +3,6 @@
 import type { User } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { sydneyDay } from "./dates";
-import { getQuestion } from "./questions";
 import { supabase } from "./supabase";
 import type { Attempt, Mode, Question } from "./types";
 
@@ -179,8 +178,4 @@ export function useStore(): Store {
   const s = useContext(Ctx);
   if (!s) throw new Error("useStore must be used inside StoreProvider");
   return s;
-}
-
-export function topicOf(qid: string) {
-  return getQuestion(qid)?.topic;
 }
