@@ -106,7 +106,9 @@ export function estimate(entries: Entry[]): Result {
   const problems: string[] = [];
   const total = units.length;
   const englishUnits = units.filter((u) => u.english);
-  if (englishUnits.length < 2) problems.push("Add at least 2 units of English. UAC has to count 2 units of English.");
+  const hasMainEnglish = rows.some((r) => r.course.english && r.course.units === 2);
+  if (!hasMainEnglish || englishUnits.length < 2)
+    problems.push("Add your English course (Standard, Advanced or EAL/D). UAC has to count 2 units of English.");
   if (total < 10) problems.push(`Add more courses. An ATAR needs at least 10 units (you have ${total}).`);
 
   const used = new Set<(typeof units)[number]>();
