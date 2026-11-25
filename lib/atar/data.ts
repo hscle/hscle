@@ -92,3 +92,60 @@ export const AGGREGATE_TO_ATAR: [number, number][] = [
   [459.4, 99.5],
   [479.4, 99.95],
 ];
+
+/**
+ * Source: NESA, "Performance bands" (HSC facts and figures), 2025 HSC, nsw.gov.au, data as at 19 January 2026.
+ * https://www.nsw.gov.au/education-and-training/nesa/hsc/facts-and-figures/performance-bands
+ * English Advanced uses the 2-decimal figures from NESA's band distribution page (BDHSC_2025_12_15140).
+ *
+ * Percentage of students in each band, lowest band first:
+ * 2-unit courses: Band 1 (0-49), 2 (50-59), 3 (60-69), 4 (70-79), 5 (80-89), 6 (90-100), marks out of 100.
+ * Extension courses: E1 (0-24), E2 (25-34), E3 (35-44), E4 (45-50), marks out of 50.
+ * UAC's Table A3 has no percentiles below the 25th, so these set where low marks sit in each course.
+ */
+export const BANDS: Record<string, number[]> = {
+  "English Advanced": [0.01, 0.25, 3.01, 31.5, 51.78, 13.46],
+  "English Standard": [0, 5, 26, 55, 12, 0],
+  "Mathematics Advanced": [2, 4, 14, 29, 28, 23],
+  "Mathematics Standard 2": [4, 12, 23, 30, 21, 9],
+  "Mathematics Extension 1": [5, 18, 43, 35],
+  "Mathematics Extension 2": [1, 14, 43, 41],
+  Physics: [2, 14, 21, 26, 25, 13],
+  Chemistry: [2, 9, 19, 33, 27, 11],
+  Biology: [4, 10, 21, 30, 28, 7],
+  Economics: [1, 6, 15, 25, 38, 14],
+  "Business Studies": [2, 9, 22, 29, 26, 12],
+  "Legal Studies": [3, 10, 19, 24, 29, 15],
+  "Modern History": [4, 9, 18, 34, 26, 10],
+  "Ancient History": [5, 12, 17, 30, 27, 9],
+  "PDH&PE": [1, 8, 23, 33, 27, 9],
+  "English Extension 1": [0, 4, 53, 42],
+  "English Extension 2": [0, 11, 54, 35],
+  "Chinese Continuers": [0, 1, 7, 13, 24, 55],
+  Geography: [2, 8, 17, 30, 30, 12],
+  "Studies of Religion II": [1, 5, 14, 31, 36, 13],
+  "Studies of Religion I": [1, 4, 15, 34, 31, 16],
+  "Visual Arts": [0, 1, 7, 28, 48, 16],
+  "Society & Culture": [1, 4, 13, 35, 35, 12],
+  "Engineering Studies": [2, 6, 27, 36, 20, 9],
+  "Software Engineering": [2, 6, 19, 37, 28, 8],
+  "Earth & Environmental Science": [3, 8, 19, 32, 30, 8],
+  "Investigating Science": [1, 5, 22, 33, 31, 8],
+  "Community & Family Studies": [1, 7, 21, 38, 28, 5],
+  "Design & Technology": [0, 2, 13, 36, 38, 11],
+  "Food Technology": [2, 10, 25, 31, 24, 9],
+  "Japanese Continuers": [1, 5, 14, 24, 33, 23],
+  "French Continuers": [0, 1, 8, 28, 35, 28],
+  "Music 1": [1, 4, 8, 20, 45, 22],
+  "Music 2": [0, 0, 0, 14, 46, 40],
+  Drama: [0, 2, 9, 31, 35, 23],
+  Dance: [0, 1, 7, 22, 48, 22],
+  "English EAL/D": [4, 10, 29, 33, 19, 5],
+  "Enterprise Computing": [3, 6, 20, 41, 25, 5],
+  "Industrial Technology": [2, 13, 31, 31, 15, 8],
+  "Aboriginal Studies": [11, 13, 18, 23, 24, 11],
+  Agriculture: [4, 11, 22, 28, 23, 11],
+  "Textiles & Design": [1, 5, 16, 29, 32, 16],
+  "Science Extension": [1, 22, 69, 7],
+  "History Extension": [1, 12, 62, 26],
+};

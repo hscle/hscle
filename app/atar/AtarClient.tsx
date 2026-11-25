@@ -204,8 +204,9 @@ export function AtarClient() {
           <li>
             Each HSC mark is turned into a scaled mark by matching where it sits in that course&apos;s {DATA_YEAR} results.
             We use the percentiles UAC publishes for every course (top mark, 99th, 90th, 75th, 50th and 25th) and draw a
-            straight line between them. Below the 25th percentile, where UAC publishes no points, marks keep falling at
-            the rate set by how spread out the course&apos;s HSC and scaled marks are.
+            straight line between them. Below the 25th percentile, where UAC publishes no points, we use NESA&apos;s {DATA_YEAR}
+            band results to find what share of the course got below your mark, and give you the scaled mark at that same
+            position.
           </li>
           <li>
             UAC adds your best 2 units of English and your best 8 other units of scaled marks. That&apos;s your aggregate,
@@ -230,7 +231,11 @@ export function AtarClient() {
           <a href={REPORT} target="_blank" rel="noreferrer">
             Report on the Scaling of the {DATA_YEAR} NSW HSC
           </a>
-          : Table A3 (HSC and scaled mark percentiles by course), Table A9 and Table 3.2 (aggregates for each ATAR). Our
+          : Table A3 (HSC and scaled mark percentiles by course), Table A9 and Table 3.2 (aggregates for each ATAR). NESA,{" "}
+          <a href="https://www.nsw.gov.au/education-and-training/nesa/hsc/facts-and-figures/performance-bands" target="_blank" rel="noreferrer">
+            {DATA_YEAR} HSC performance bands
+          </a>{" "}
+          (how many students got each band in each course). Our
           aggregate-to-ATAR step matches UAC&apos;s Table 3.2 to within 0.1. Course units follow NESA&apos;s HSC rules.
         </p>
       </section>
