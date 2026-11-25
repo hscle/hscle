@@ -1,0 +1,1 @@
+Source: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill @ 8db3633 (MIT). Tests removed. Run scripts from the repo root as: python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<query>" --domain <domain>
