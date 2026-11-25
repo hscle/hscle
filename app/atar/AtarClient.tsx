@@ -70,12 +70,15 @@ export function AtarClient() {
     .filter((c) => !entries.some((e) => e.course === ALSO_SITS[c]))
     .map((c) => `Add your ${ALSO_SITS[c]} mark. ${c} students also get a result in ${ALSO_SITS[c]}, and it counts as 1 more unit.`);
   const notes = prerequisiteNotes(chosen);
-  const problems = [
-    ...missingAlso,
-    ...badRows.map((r) => `${r.course} is marked out of ${maxMark(getCourse(r.course)!)}. Check that mark.`),
-    ...result.problems,
-  ];
-  const ready = problems.length === 0;
+  const markProblems = badRows.map((r) => `${r.course} is marked out of ${maxMark(getCourse(r.course)!)}. Check that mark.`);
+  const warnings = [...missingAlso, ...result.problems, ...notes];
+  // The result only appears once the student presses the button, then follows their edits live.
+  const [shown, setShown] = useState(false);
+  const canShow = shown && entries.length > 0 && badRows.length === 0;
+  const calculate = () => {
+    setShown(true);
+    requestAnimationFrame(() => document.getElementById("atar-result")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  };
 
   const update = (id: number, patch: Partial<Row>) =>
     setRows((rs) => {
@@ -160,34 +163,39 @@ export function AtarClient() {
         </div>
       </div>
 
-      <div className="card atar-result" aria-live="polite">
-        {ready ? (
-          <>
-            <span className="label">Estimated ATAR</span>
-            <div className="atar-big num">{fmtAtar(result.atar)}</div>
-            <p className="muted" style={{ margin: 0 }}>
-              Likely range <strong className="num">{fmtAtar(result.low)}</strong> to{" "}
-              <strong className="num">{fmtAtar(result.high)}</strong>. Aggregate{" "}
-              <strong className="num">{fmt(result.aggregate)}</strong> out of 500.
-            </p>
-            {notes.map((n) => (
-              <p key={n} className="small atar-warn" style={{ margin: "0.5rem 0 0" }}>
-                {n}
+      <button type="button" className="btn btn-primary atar-calc" onClick={calculate} disabled={entries.length === 0}>
+        Calculate my ATAR
+      </button>
+
+      {shown && (
+        <div id="atar-result" className="card atar-result" aria-live="polite">
+          <span className="label">Estimated ATAR</span>
+          {canShow ? (
+            <>
+              <div className="atar-big num">{fmtAtar(result.atar)}</div>
+              <p className="muted" style={{ margin: 0 }}>
+                Likely range <strong className="num">{fmtAtar(result.low)}</strong> to{" "}
+                <strong className="num">{fmtAtar(result.high)}</strong>. Aggregate{" "}
+                <strong className="num">{fmt(result.aggregate)}</strong> out of 500.
               </p>
-            ))}
-          </>
-        ) : (
-          <>
-            <span className="label">Estimated ATAR</span>
-            <div className="atar-big num muted">–</div>
-            {[...problems, ...notes].map((p) => (
-              <p key={p} className="muted small" style={{ margin: "0.25rem 0 0" }}>
-                {p}
-              </p>
-            ))}
-          </>
-        )}
-      </div>
+              {warnings.map((n) => (
+                <p key={n} className="small atar-warn" style={{ margin: "0.5rem 0 0" }}>
+                  {n}
+                </p>
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="atar-big num muted">–</div>
+              {(markProblems.length ? markProblems : ["Enter at least one HSC mark."]).map((p) => (
+                <p key={p} className="small atar-warn" style={{ margin: "0.25rem 0 0" }}>
+                  {p}
+                </p>
+              ))}
+            </>
+          )}
+        </div>
+      )}
 
       <section className="atar-notes small muted">
         <h2>How this works</h2>
@@ -195,7 +203,8 @@ export function AtarClient() {
           <li>
             Each HSC mark is turned into a scaled mark by matching where it sits in that course&apos;s {DATA_YEAR} results.
             We use the percentiles UAC publishes for every course (top mark, 99th, 90th, 75th, 50th and 25th) and draw a
-            straight line between them.
+            straight line between them. Below the 25th percentile, where UAC publishes no points, marks keep falling at
+            the rate set by how spread out the course&apos;s HSC and scaled marks are.
           </li>
           <li>
             UAC adds your best 2 units of English and your best 8 other units of scaled marks. That&apos;s your aggregate,
