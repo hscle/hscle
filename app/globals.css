@@ -188,7 +188,7 @@ strong { color: var(--ink); font-weight: 600; }
 }
 .sb-row { display: flex; justify-content: space-between; gap: 1rem; }
 .sb-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--contrast-muted); }
-.sb-tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 1.1rem 0 1.3rem; }
+.sb-tiles { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 7px; margin: 1.1rem 0 1.3rem; }
 .sb-tile {
   aspect-ratio: 1 / 1; border-radius: 10px; display: grid; place-items: center;
   font-family: var(--display); font-weight: 700; font-size: 1rem; line-height: 1;

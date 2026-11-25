@@ -1,4 +1,4 @@
-export type SubjectId = "ms2" | "ma" | "me1" | "phys" | "chem" | "bio";
+export type SubjectId = "ms2" | "ma" | "me1" | "me2" | "phys" | "chem" | "bio";
 
 export type GroupId = "maths" | "science" | "english" | "hsie";
 

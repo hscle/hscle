@@ -1,4 +1,5 @@
 import type { Question, SubjectId } from "../types";
+import { mathsExt2 } from "./ext2";
 import { mathsAdvanced, mathsExt1, mathsStandard2 } from "./maths";
 import { biology, chemistry, physics } from "./sciences";
 
@@ -6,6 +7,7 @@ export const QUESTIONS: Question[] = [
   ...mathsStandard2,
   ...mathsAdvanced,
   ...mathsExt1,
+  ...mathsExt2,
   ...physics,
   ...chemistry,
   ...biology,

@@ -28,7 +28,7 @@ npm run dev          # http://localhost:3000
 
 ## Adding and editing questions
 
-Questions live in `lib/questions/maths.ts` and `lib/questions/sciences.ts`. Each has a prompt, 4 options, the correct answer index (0 = A), a worked solution, and a common mistake. Maths uses `$...$` (inline) and `$$...$$` (display) in LaTeX; write `\$` for a dollar sign.
+Questions live in `lib/questions/maths.ts`, `lib/questions/ext2.ts` (Maths Extension 2) and `lib/questions/sciences.ts`. Each has a prompt, 4 options, the correct answer index (0 = A), a worked solution, and a common mistake. Maths uses `$...$` (inline) and `$$...$$` (display) in LaTeX; write `\$` for a dollar sign.
 
 After editing:
 

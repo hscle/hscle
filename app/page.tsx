@@ -141,7 +141,7 @@ export default function Home() {
               New in <Countdown />
             </span>
           </div>
-          <div className="sb-tiles">
+          <div className="sb-tiles" style={{ ["--n" as string]: SUBJECTS.length }}>
             {results.map(({ s, a }) => (
               <span
                 key={s.id}
