@@ -69,7 +69,7 @@ function Status({ a }: { a?: Attempt }) {
     </span>
   ) : (
     <span className="status bad">
-      <Cross /> <span className="st-txt">Missed</span>
+      <Cross /> <span className="st-txt">Incorrect</span>
     </span>
   );
 }
@@ -146,7 +146,7 @@ export default function Home() {
                 key={s.id}
                 className={`sb-tile ${a ? (a.correct ? "good" : "bad") : ""}`}
                 style={{ ["--accent" as string]: s.color }}
-                title={`${s.name}: ${a ? (a.correct ? "correct" : "missed") : "not answered yet"}`}
+                title={`${s.name}: ${a ? (a.correct ? "correct" : "incorrect") : "not answered yet"}`}
               >
                 {s.glyph}
               </span>
@@ -159,13 +159,6 @@ export default function Home() {
                 {ready ? current : "–"}
               </div>
               <div className="sb-label">Day streak</div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div className="sb-big num">
-                {ready ? correct : "–"}
-                <span className="sb-of">/{SUBJECTS.length}</span>
-              </div>
-              <div className="sb-label">Correct today</div>
             </div>
           </div>
           <div className="sb-foot">

@@ -200,10 +200,8 @@ strong { color: var(--ink); font-weight: 600; }
 .sb-tile.bad { background: var(--bad); color: #fff; box-shadow: none; }
 .sb-stats { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
 .sb-big { display: flex; align-items: center; gap: 0.3rem; font-family: var(--display); font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--on-contrast); margin-bottom: 0.3rem; }
-.sb-stats > div:last-child .sb-big { justify-content: flex-end; }
 .sb-big svg { width: 24px; height: 24px; color: var(--contrast-muted); }
 .sb-big.lit svg { color: var(--gold); }
-.sb-of { font-size: 1.1rem; color: var(--contrast-muted); align-self: flex-end; margin-bottom: 0.2rem; }
 .sb-foot {
   display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;
   margin-top: 1.15rem; padding-top: 1rem; border-top: 1px solid var(--contrast-line); font-size: 0.85rem; color: var(--contrast-muted);

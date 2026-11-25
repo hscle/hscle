@@ -122,7 +122,7 @@ export function ArchiveClient() {
         </div>
         <div className="cal-key small muted">
           <span><i className="good" /> Correct</span>
-          <span><i className="bad" /> Missed</span>
+          <span><i className="bad" /> Incorrect</span>
           <span><i /> Not answered</span>
         </div>
       </div>
