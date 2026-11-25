@@ -317,6 +317,14 @@ strong { color: var(--ink); font-weight: 600; }
 .band p { margin: 0.3rem 0 0; font-size: 0.95rem; }
 .glyph.big { width: 60px; height: 60px; border-radius: 16px; font-size: 1.6rem; }
 .glyph svg { width: 58%; height: 58%; }
+.glyph.small { width: 32px; height: 32px; border-radius: 9px; font-size: 0.95rem; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent-ink); }
+.sb-tile svg { width: 56%; height: 56%; }
+.row-soon {
+  display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; padding: 0.5rem 0.75rem 0.5rem 0.65rem;
+  border-radius: 14px; border: 1.5px dashed color-mix(in srgb, var(--accent) 35%, var(--line));
+}
+.row-soon .row-name { flex: 1; font-size: 0.98rem; color: var(--muted); }
+.row-soon .soon-tag { margin-left: 0; }
 @media (max-width: 460px) {
   .band { padding: 1rem; gap: 0.85rem; }
   .glyph.big { width: 48px; height: 48px; border-radius: 13px; font-size: 1.3rem; }

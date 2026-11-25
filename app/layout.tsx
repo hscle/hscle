@@ -9,7 +9,7 @@ import { themeScript } from "@/lib/theme";
 import { StoreProvider } from "@/lib/store";
 
 const DESCRIPTION =
-  "Free daily HSC questions for Maths Standard 2, Advanced, Extension 1, Physics, Chemistry and Biology, with worked solutions. Plus an ATAR calculator built on UAC scaling data.";
+  "Free daily HSC questions for Maths Standard, Advanced, Extension 1, Physics, Chemistry and Biology, with worked solutions. Plus an ATAR calculator built on UAC scaling data.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

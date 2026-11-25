@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Band } from "@/components/Band";
 import { QuestionCard } from "@/components/QuestionCard";
+import { SubjectGlyph } from "@/components/SubjectGlyph";
 import { dailyQuestion } from "@/lib/daily";
 import { dailyFor } from "@/lib/progress";
 import { useStore } from "@/lib/store";
@@ -20,7 +21,7 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
     <div className="narrow-col" style={{ ["--accent" as string]: subject.color }}>
       <Band
         accent={subject.color}
-        icon={subject.glyph}
+        icon={<SubjectGlyph subject={subject} />}
         title={subject.name}
         crumbs={
           <>
@@ -30,7 +31,7 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
           </>
         }
       >
-        Daily question. You get one try, and a new one arrives at midnight.
+        {subject.note ? `${subject.note} ` : ""}You get one try, and a new question arrives at midnight.
       </Band>
       {ready && <QuestionCard key={`${question.id}-${today}`} question={question} mode="daily" previous={previous} />}
       {ready && previous && (

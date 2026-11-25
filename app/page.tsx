@@ -8,6 +8,7 @@ import { dailyFor, streaks } from "@/lib/progress";
 import { useStore } from "@/lib/store";
 import { COMING_SOON, GROUPS, SUBJECTS } from "@/lib/subjects";
 import type { Attempt } from "@/lib/types";
+import { SubjectGlyph } from "@/components/SubjectGlyph";
 
 function Countdown() {
   const [s, setS] = useState<number | null>(null);
@@ -148,7 +149,7 @@ export default function Home() {
                 style={{ ["--accent" as string]: s.color }}
                 title={`${s.name}: ${a ? (a.correct ? "correct" : "incorrect") : "not answered yet"}`}
               >
-                {s.glyph}
+                <SubjectGlyph subject={s} />
               </span>
             ))}
           </div>
@@ -192,7 +193,7 @@ export default function Home() {
                     <li key={s.id}>
                       <Link href={`/daily/${s.id}/`} className="row">
                         <span className="glyph" aria-hidden="true">
-                          {s.glyph}
+                          <SubjectGlyph subject={s} />
                         </span>
                         <span className="row-main">
                           <span className="row-name">{s.short}</span>
@@ -204,6 +205,15 @@ export default function Home() {
                   );
                 })}
               </ul>
+              {COMING_SOON.filter((c) => c.group === g.id).map((c) => (
+                <div key={c.name} className="row-soon">
+                  <span className="glyph small" aria-hidden="true">
+                    {c.glyph ?? c.name[0]}
+                  </span>
+                  <span className="row-name">{c.short ?? c.name}</span>
+                  <span className="soon-tag">Coming soon</span>
+                </div>
+              ))}
             </div>
           );
         })}

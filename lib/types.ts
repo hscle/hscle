@@ -16,8 +16,12 @@ export interface Subject {
   short: string;
   /** Name students type into Google, e.g. "Maths Extension 1". */
   searchName: string;
-  /** Short symbol shown inside the subject's circle, e.g. "∑". */
+  /** Short symbol shown inside the subject's tile, e.g. "∑". */
   glyph: string;
+  /** Draw an icon instead of the text glyph (see components/SubjectGlyph.tsx). */
+  icon?: "dna";
+  /** Extra line on the subject's daily page, e.g. which courses it covers. */
+  note?: string;
   /** CSS colour used for the subject's accent. */
   color: string;
 }
