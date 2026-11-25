@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Band, CalendarIcon } from "@/components/Band";
 import { QuestionCard } from "@/components/QuestionCard";
 import { dailyQuestion } from "@/lib/daily";
 import { addDays, daysBetween } from "@/lib/dates";
@@ -58,13 +59,10 @@ export function ArchiveClient() {
 
   return (
     <div className="narrow-col">
-      <div className="page-head">
-        <h1>Archive</h1>
-        <p className="muted">
-          Every past daily question, with worked solutions. Pick a day to catch up. Answers here don&apos;t affect your
-          streak.
-        </p>
-      </div>
+      <Band accent="var(--brand)" icon={<CalendarIcon />} title="Archive">
+        Every past daily question, with worked solutions. Pick a day to catch up. Answers here don&apos;t affect your
+        streak.
+      </Band>
       <div className="card cal">
         <div className="cal-head">
           {month > launchMonth ? (
@@ -141,15 +139,20 @@ function ArchiveDay({ day }: { day: string }) {
   const { attempts } = useStore();
   return (
     <div className="narrow-col">
-      <div className="page-head">
-        <div className="crumbs">
-          <Link href="/archive/">Archive</Link>
-          <span aria-hidden="true">/</span>
-          <span>{longDate(day, true)}</span>
-        </div>
-        <h1>{longDate(day)}</h1>
-        <p className="muted">The daily questions from this day. Answers here don&apos;t affect your streak.</p>
-      </div>
+      <Band
+        accent="var(--brand)"
+        icon={<CalendarIcon />}
+        title={longDate(day)}
+        crumbs={
+          <>
+            <Link href="/archive/">Archive</Link>
+            <span aria-hidden="true">/</span>
+            <span>{longDate(day, true)}</span>
+          </>
+        }
+      >
+        The daily questions from this day. Answers here don&apos;t affect your streak.
+      </Band>
       {GROUPS.map((g) => {
         const subs = SUBJECTS.filter((s) => s.group === g.id);
         if (!subs.length) return null;

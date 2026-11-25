@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Band, GaugeIcon } from "@/components/Band";
 import { COURSES, DATA_YEAR, estimate, getCourse, maxMark, type Entry } from "@/lib/atar";
 
 const KEY = "hscle:atar";
@@ -60,13 +61,10 @@ export function AtarClient() {
 
   return (
     <div className="narrow-col">
-      <div className="page-head">
-        <h1>ATAR Calculator</h1>
-        <p className="muted">
-          Enter your HSC marks to estimate your ATAR. It uses UAC&apos;s official {DATA_YEAR} scaling data and the same
-          rule UAC uses: your best 2 units of English plus your best 8 other units.
-        </p>
-      </div>
+      <Band accent="var(--gold)" icon={<GaugeIcon />} title="ATAR Calculator">
+        Enter your HSC marks to estimate your ATAR. It uses UAC&apos;s official {DATA_YEAR} scaling data and the same rule
+        UAC uses: your best 2 units of English plus your best 8 other units.
+      </Band>
 
       <div className="card atar-form">
         <div className="atar-row atar-head label">

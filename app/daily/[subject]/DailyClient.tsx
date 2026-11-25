@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Band } from "@/components/Band";
 import { QuestionCard } from "@/components/QuestionCard";
 import { dailyQuestion } from "@/lib/daily";
 import { dailyFor } from "@/lib/progress";
@@ -17,15 +18,20 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
 
   return (
     <div className="narrow-col" style={{ ["--accent" as string]: subject.color }}>
-      <div className="page-head">
-        <div className="crumbs">
-          <Link href="/">Daily Questions</Link>
-          <span aria-hidden="true">/</span>
-          <span>{getGroup(subject.group).name}</span>
-        </div>
-        <h1>{subject.name}</h1>
-        <p className="muted">Daily question. You get one try, and a new one arrives at midnight.</p>
-      </div>
+      <Band
+        accent={subject.color}
+        icon={subject.glyph}
+        title={subject.name}
+        crumbs={
+          <>
+            <Link href="/">Daily Questions</Link>
+            <span aria-hidden="true">/</span>
+            <span>{getGroup(subject.group).name}</span>
+          </>
+        }
+      >
+        Daily question. You get one try, and a new one arrives at midnight.
+      </Band>
       {ready && <QuestionCard key={`${question.id}-${today}`} question={question} mode="daily" previous={previous} />}
       {ready && previous && (
         <div className="after">

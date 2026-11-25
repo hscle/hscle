@@ -14,6 +14,12 @@ const NAV = [
   { href: "/atar/", label: "ATAR Calculator" },
 ];
 
+/** "Daily Questions" also covers each subject's daily page. */
+function isActive(href: string, path: string) {
+  if (href === "/") return path === "/" || path.startsWith("/daily/");
+  return path.startsWith(href);
+}
+
 export function Header() {
   const { attempts, today, user, profile, ready } = useStore();
   const path = usePathname();
@@ -34,7 +40,7 @@ export function Header() {
             <Link
               key={n.href}
               href={n.href}
-              className={path === n.href || (n.href !== "/" && path.startsWith(n.href)) ? "active" : ""}
+              className={isActive(n.href, path) ? "active" : ""}
             >
               {n.label}
             </Link>
