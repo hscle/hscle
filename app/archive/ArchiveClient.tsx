@@ -22,54 +22,116 @@ function longDate(day: string, withYear = false) {
   });
 }
 
-/** Past days, newest first (today is on the Daily Questions page, not here). */
-function pastDays(today: string): string[] {
-  const n = daysBetween(LAUNCH_DAY, today);
-  return Array.from({ length: Math.max(0, n) }, (_, i) => addDays(today, -(i + 1)));
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function monthLabel(month: string) {
+  return new Date(month + "-15T12:00:00Z").toLocaleDateString("en-AU", { month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+function shiftMonth(month: string, n: number): string {
+  const [y, m] = month.split("-").map(Number);
+  const d = new Date(Date.UTC(y, m - 1 + n, 1));
+  return d.toISOString().slice(0, 7);
+}
+
+/** Calendar cells for a month, Monday first; null = padding. */
+function monthCells(month: string): (string | null)[] {
+  const first = month + "-01";
+  const lead = (new Date(first + "T00:00:00Z").getUTCDay() + 6) % 7;
+  const cells: (string | null)[] = Array(lead).fill(null);
+  for (let d = first; d.startsWith(month); d = addDays(d, 1)) cells.push(d);
+  while (cells.length % 7) cells.push(null);
+  return cells;
 }
 
 export function ArchiveClient() {
   const { today, ready, attempts } = useStore();
-  const day = useSearchParams().get("day");
+  const params = useSearchParams();
+  const day = params.get("day");
+  const launchMonth = LAUNCH_DAY.slice(0, 7);
+  const thisMonth = today.slice(0, 7);
+  const asked = params.get("month");
+  const month = asked && asked >= launchMonth && asked <= thisMonth ? asked : thisMonth;
   if (!ready) return null;
-  const days = pastDays(today);
-  if (day && days.includes(day)) return <ArchiveDay day={day} />;
+  if (day && day >= LAUNCH_DAY && day < today) return <ArchiveDay day={day} />;
+  const pastCount = Math.max(0, daysBetween(LAUNCH_DAY, today));
 
   return (
     <div className="narrow-col">
       <div className="page-head">
         <h1>Archive</h1>
         <p className="muted">
-          Every past daily question, with worked solutions. Catch up on days you missed. Answers here don&apos;t affect
-          your streak.
+          Every past daily question, with worked solutions. Pick a day to catch up. Answers here don&apos;t affect your
+          streak.
         </p>
       </div>
-      {days.length === 0 ? (
-        <div className="card empty">
-          <p style={{ margin: 0 }}>
-            Nothing here yet. Today&apos;s questions move into the archive at midnight, so check back tomorrow.
-          </p>
-          <Link href="/" className="btn btn-primary btn-small" style={{ marginTop: "1rem" }}>
-            Go to today&apos;s questions
-          </Link>
+      <div className="card cal">
+        <div className="cal-head">
+          {month > launchMonth ? (
+            <Link href={`/archive/?month=${shiftMonth(month, -1)}`} className="icon-btn" aria-label="Previous month">
+              ‹
+            </Link>
+          ) : (
+            <span className="icon-btn disabled" aria-hidden="true">‹</span>
+          )}
+          <h2>{monthLabel(month)}</h2>
+          {month < thisMonth ? (
+            <Link href={`/archive/?month=${shiftMonth(month, 1)}`} className="icon-btn" aria-label="Next month">
+              ›
+            </Link>
+          ) : (
+            <span className="icon-btn disabled" aria-hidden="true">›</span>
+          )}
         </div>
-      ) : (
-        <ul className="archive-list">
-          {days.map((d) => (
-            <li key={d}>
-              <Link href={`/archive/?day=${d}`} className="archive-day">
-                <span className="archive-date">{longDate(d, true)}</span>
-                <span className="tiles" aria-hidden="true">
-                  {SUBJECTS.map((s) => {
-                    const a = dailyFor(attempts, s.id, d);
-                    return <span key={s.id} className={`tile ${a ? (a.correct ? "good" : "bad") : ""}`} />;
-                  })}
-                </span>
-                <span className="go">Open →</span>
-              </Link>
-            </li>
+        <div className="cal-grid" role="grid">
+          {WEEKDAYS.map((w) => (
+            <span key={w} className="cal-wd label">
+              {w}
+            </span>
           ))}
-        </ul>
+          {monthCells(month).map((d, i) => {
+            if (!d) return <span key={i} className="cal-cell pad" />;
+            const n = Number(d.slice(8));
+            const results = SUBJECTS.map((s) => dailyFor(attempts, s.id, d));
+            const dots = (
+              <span className="cal-dots" aria-hidden="true">
+                {results.map((a, j) => (
+                  <span key={j} className={a ? (a.correct ? "good" : "bad") : ""} />
+                ))}
+              </span>
+            );
+            if (d === today)
+              return (
+                <Link key={d} href="/" className="cal-cell today-cell" title="Today: answer on Daily Questions">
+                  <span className="cal-n">{n}</span>
+                  {dots}
+                </Link>
+              );
+            if (d < LAUNCH_DAY || d > today)
+              return (
+                <span key={d} className="cal-cell off">
+                  <span className="cal-n">{n}</span>
+                </span>
+              );
+            const done = results.filter(Boolean).length;
+            return (
+              <Link key={d} href={`/archive/?day=${d}`} className="cal-cell" aria-label={`${longDate(d, true)}, ${done} of ${SUBJECTS.length} answered`}>
+                <span className="cal-n">{n}</span>
+                {dots}
+              </Link>
+            );
+          })}
+        </div>
+        <div className="cal-key small muted">
+          <span><i className="good" /> Correct</span>
+          <span><i className="bad" /> Missed</span>
+          <span><i /> Not answered</span>
+        </div>
+      </div>
+      {pastCount === 0 && (
+        <p className="muted small">
+          HSCLE launched today, so there are no past days yet. Today&apos;s questions join the archive at midnight.
+        </p>
       )}
     </div>
   );

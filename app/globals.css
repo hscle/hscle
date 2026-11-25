@@ -253,6 +253,37 @@ select, input {
 @media (max-width: 460px) { .archive-day .go { display: none; } }
 .empty { text-align: left; }
 
+/* Archive calendar */
+.cal { padding: 1.25rem; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.cal-head h2 { margin: 0; font-size: 1.25rem; }
+.cal-head .icon-btn { font-size: 1.3rem; line-height: 1; }
+.icon-btn.disabled { opacity: 0.3; cursor: default; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal-wd { text-align: center; padding-bottom: 0.25rem; font-size: 0.68rem; }
+.cal-cell {
+  aspect-ratio: 1 / 1; border-radius: 10px; border: 1px solid var(--line); background: var(--card);
+  display: flex; flex-direction: column; justify-content: space-between; padding: 6px 7px; color: var(--ink); min-width: 0;
+}
+a.cal-cell:hover { border-color: var(--ink); }
+.cal-cell.pad { border: 0; background: transparent; }
+.cal-cell.off { background: transparent; border-style: dashed; color: var(--muted); opacity: 0.5; }
+.cal-cell.today-cell { border: 2px solid var(--ink); }
+.cal-n { font-weight: 600; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.cal-dots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: min(100%, 30px); }
+.cal-dots span { aspect-ratio: 1 / 1; border-radius: 2px; background: var(--empty); }
+.cal-dots .good, .cal-key .good { background: var(--good); }
+.cal-dots .bad, .cal-key .bad { background: var(--bad); }
+.cal-key { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+.cal-key span { display: inline-flex; align-items: center; gap: 0.35rem; }
+.cal-key i { width: 10px; height: 10px; border-radius: 3px; background: var(--empty); display: inline-block; }
+@media (max-width: 460px) {
+  .cal { padding: 0.9rem; }
+  .cal-grid { gap: 4px; }
+  .cal-cell { padding: 4px; border-radius: 8px; }
+  .cal-n { font-size: 0.78rem; }
+}
+
 /* Question bank */
 .bank-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
 .bank-item {
