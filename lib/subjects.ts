@@ -10,12 +10,12 @@ export const GROUPS: Group[] = [
 const groupColor = (g: GroupId) => GROUPS.find((x) => x.id === g)!.color;
 
 export const SUBJECTS: Subject[] = [
-  { id: "ms2", group: "maths", name: "Mathematics Standard 2", short: "Standard 2", glyph: "%", color: groupColor("maths") },
-  { id: "ma", group: "maths", name: "Mathematics Advanced", short: "Advanced", glyph: "f′", color: groupColor("maths") },
-  { id: "me1", group: "maths", name: "Mathematics Extension 1", short: "Extension 1", glyph: "∑", color: groupColor("maths") },
-  { id: "phys", group: "science", name: "Physics", short: "Physics", glyph: "λ", color: groupColor("science") },
-  { id: "chem", group: "science", name: "Chemistry", short: "Chemistry", glyph: "pH", color: groupColor("science") },
-  { id: "bio", group: "science", name: "Biology", short: "Biology", glyph: "2n", color: groupColor("science") },
+  { id: "ms2", slug: "maths-standard-2", searchName: "Maths Standard 2", group: "maths", name: "Mathematics Standard 2", short: "Standard 2", glyph: "%", color: groupColor("maths") },
+  { id: "ma", slug: "maths-advanced", searchName: "Maths Advanced", group: "maths", name: "Mathematics Advanced", short: "Advanced", glyph: "f′", color: groupColor("maths") },
+  { id: "me1", slug: "maths-extension-1", searchName: "Maths Extension 1", group: "maths", name: "Mathematics Extension 1", short: "Extension 1", glyph: "∑", color: groupColor("maths") },
+  { id: "phys", slug: "physics", searchName: "Physics", group: "science", name: "Physics", short: "Physics", glyph: "λ", color: groupColor("science") },
+  { id: "chem", slug: "chemistry", searchName: "Chemistry", group: "science", name: "Chemistry", short: "Chemistry", glyph: "pH", color: groupColor("science") },
+  { id: "bio", slug: "biology", searchName: "Biology", group: "science", name: "Biology", short: "Biology", glyph: "2n", color: groupColor("science") },
 ];
 
 /** Shown on the home page so students can see what's coming. No questions yet. */
@@ -43,4 +43,8 @@ export function subjectOrThrow(id: SubjectId): Subject {
   const s = getSubject(id);
   if (!s) throw new Error(`Unknown subject ${id}`);
   return s;
+}
+
+export function getSubjectBySlug(slug: string): Subject | undefined {
+  return SUBJECTS.find((s) => s.slug === slug);
 }

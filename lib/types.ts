@@ -14,6 +14,10 @@ export interface Subject {
   group: GroupId;
   name: string;
   short: string;
+  /** URL slug for the public question bank, e.g. "maths-extension-1". Never change once published. */
+  slug: string;
+  /** Name students type into Google, e.g. "Maths Extension 1". */
+  searchName: string;
   /** Short symbol shown inside the subject's circle, e.g. "∑". */
   glyph: string;
   /** CSS colour used for the subject's accent. */

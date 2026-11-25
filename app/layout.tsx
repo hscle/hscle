@@ -1,14 +1,34 @@
 import type { Metadata, Viewport } from "next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import Link from "next/link";
 import { Header } from "@/components/Header";
+import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
+import { SUBJECTS } from "@/lib/subjects";
 import { themeScript } from "@/lib/theme";
 import { StoreProvider } from "@/lib/store";
 
+const DESCRIPTION =
+  "Free daily HSC questions for Maths Standard 2, Advanced, Extension 1, Physics, Chemistry and Biology, with worked solutions. Plus an ATAR calculator built on UAC scaling data.";
+
 export const metadata: Metadata = {
-  title: "HSCLE: the daily HSC quiz",
-  description:
-    "A new HSC exam-style question every day for Maths, Physics, Chemistry and Biology, with worked solutions. Build a streak and compete with friends.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: "HSCLE: free daily HSC questions and ATAR calculator", template: "%s · HSCLE" },
+  description: DESCRIPTION,
+  applicationName: "HSCLE",
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", siteName: "HSCLE", locale: "en_AU", description: DESCRIPTION },
+  twitter: { card: "summary" },
+  ...(GOOGLE_SITE_VERIFICATION ? { verification: { google: GOOGLE_SITE_VERIFICATION } } : {}),
+};
+
+const SITE_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "HSCLE",
+  url: SITE_URL + "/",
+  description: DESCRIPTION,
+  inLanguage: "en-AU",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#f6f5f1" };
@@ -18,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en-AU" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SITE_LD) }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -30,6 +51,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="container">{children}</main>
           <footer className="footer">
+            <nav className="footer-links" aria-label="Question bank">
+              <Link href="/questions/">HSC practice questions</Link>
+              {SUBJECTS.map((s) => (
+                <Link key={s.id} href={`/questions/${s.slug}/`}>
+                  {s.searchName}
+                </Link>
+              ))}
+              <Link href="/atar/">ATAR calculator</Link>
+            </nav>
             HSCLE questions are original practice questions written in the style of the NSW HSC. They are not official
             NESA material.
           </footer>
