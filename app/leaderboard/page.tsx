@@ -32,11 +32,9 @@ export default function LeaderboardPage() {
   return (
     <>
       <div className="page-head">
-        <h1>Weekly leaderboard</h1>
-        <p className="muted">
-          Ranked by correct daily answers since Monday {weekStart(today)}. Ties go to the longer streak. Resets every
-          Monday at midnight.
-        </p>
+        <p className="kicker">This week&apos;s</p>
+        <h1>Leaderboard</h1>
+        <p className="micro">Correct daily answers since Monday {weekStart(today)} · ties go to the longer streak</p>
       </div>
       {ready && (
         <div className="card">
@@ -51,6 +49,7 @@ export default function LeaderboardPage() {
       )}
       {error && <div className="card bad">Couldn&apos;t load the leaderboard: {error}</div>}
       {rows && (
+        <div className="card">
         <table className="board">
           <thead>
             <tr>
@@ -58,7 +57,7 @@ export default function LeaderboardPage() {
               <th>Student</th>
               <th>School</th>
               <th>Correct</th>
-              <th>🔥</th>
+              <th>Streak</th>
             </tr>
           </thead>
           <tbody>
@@ -80,6 +79,7 @@ export default function LeaderboardPage() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </>
   );

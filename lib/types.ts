@@ -4,7 +4,8 @@ export interface Subject {
   id: SubjectId;
   name: string;
   short: string;
-  emoji: string;
+  /** Short symbol shown inside the subject's circle, e.g. "∑". */
+  glyph: string;
   /** CSS colour used for the subject's accent. */
   color: string;
 }

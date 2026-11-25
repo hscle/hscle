@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { dailyQuestion } from "@/lib/daily";
 import { secondsUntilNextDay } from "@/lib/dates";
 import { dailyFor, streaks } from "@/lib/progress";
 import { useStore } from "@/lib/store";
@@ -50,48 +49,46 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <h1>Today&apos;s HSC questions</h1>
-        <p className="muted">
-          One exam-style question per subject, every day, with a full worked solution. New questions in <Countdown />.
+        <p className="kicker">The daily</p>
+        <h1 className="wordmark">
+          HSC<i>LE</i>
+        </h1>
+        <p className="tagline">One exam-style question for each HSC subject, every day, with a full worked solution.</p>
+        <p className="micro">
+          Resets <Countdown />
         </p>
-        <div className="stats-row">
-          <div className="stat">
-            <div className="stat-num">🔥 {ready ? current : "–"}</div>
-            <div className="stat-label">day streak</div>
-          </div>
-          <div className="stat">
-            <div className="stat-num">{ready ? `${doneCount}/${SUBJECTS.length}` : "–"}</div>
-            <div className="stat-label">done today</div>
-          </div>
-          <div className="stat">
-            <div className="stat-num">{ready ? best : "–"}</div>
-            <div className="stat-label">best streak</div>
-          </div>
-        </div>
       </section>
 
-      <section className="grid">
+      <section className="orbs">
         {results.map(({ s, a }) => {
-          const q = dailyQuestion(s.id, today);
+          const status = !ready ? "\u00a0" : a ? (a.correct ? "Correct" : "Answered") : "Today";
           return (
-            <Link key={s.id} href={`/daily/${s.id}/`} className="card subject-card" style={{ ["--accent" as string]: s.color }}>
-              <div className="subject-emoji">{s.emoji}</div>
-              <div className="subject-name">{s.name}</div>
-              <div className="muted small">{ready ? q.topic : "\u00a0"}</div>
-              <div className={`status ${a ? (a.correct ? "good" : "bad") : ""}`}>
-                {!ready ? "" : a ? (a.correct ? "✅ Correct" : "❌ Answered") : "Answer now →"}
-              </div>
+            <Link key={s.id} href={`/daily/${s.id}/`} className="orb-link" style={{ ["--accent" as string]: s.color }}>
+              <span className={`orb ${a ? "done" : ""}`}>{s.glyph}</span>
+              <span className="orb-name">{s.short}</span>
+              <span className={`micro orb-status ${a ? (a.correct ? "good" : "bad") : ""}`}>{status}</span>
             </Link>
           );
         })}
       </section>
 
+      <section className="summary">
+        <span className="micro">
+          Streak<b>{ready ? current : "–"}</b>
+        </span>
+        <span className="micro">
+          Today<b>{ready ? `${correctCount}/${doneCount}` : "–"}</b>
+        </span>
+        <span className="micro">
+          Best<b>{ready ? best : "–"}</b>
+        </span>
+      </section>
+
       {doneCount > 0 && (
         <section className="share">
           <button type="button" className="btn" onClick={share}>
-            {copied ? "Copied!" : "📋 Share today's result"}
+            {copied ? "Copied" : "Share today's result"}
           </button>
-          <span className="muted small">Challenge your friends to beat your score.</span>
         </section>
       )}
     </>

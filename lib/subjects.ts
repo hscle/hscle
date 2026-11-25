@@ -1,12 +1,12 @@
 import type { Subject, SubjectId } from "./types";
 
 export const SUBJECTS: Subject[] = [
-  { id: "ms2", name: "Mathematics Standard 2", short: "Maths Std 2", emoji: "📐", color: "#0ea5e9" },
-  { id: "ma", name: "Mathematics Advanced", short: "Maths Adv", emoji: "📈", color: "#6366f1" },
-  { id: "me1", name: "Mathematics Extension 1", short: "Maths Ext 1", emoji: "∑", color: "#a855f7" },
-  { id: "phys", name: "Physics", short: "Physics", emoji: "⚛️", color: "#f97316" },
-  { id: "chem", name: "Chemistry", short: "Chemistry", emoji: "🧪", color: "#10b981" },
-  { id: "bio", name: "Biology", short: "Biology", emoji: "🧬", color: "#ec4899" },
+  { id: "ms2", name: "Mathematics Standard 2", short: "Standard 2", glyph: "%", color: "#3b9fd9" },
+  { id: "ma", name: "Mathematics Advanced", short: "Advanced", glyph: "f′", color: "#5b7cfa" },
+  { id: "me1", name: "Mathematics Extension 1", short: "Extension 1", glyph: "∑", color: "#9b6cf0" },
+  { id: "phys", name: "Physics", short: "Physics", glyph: "λ", color: "#ec8a4b" },
+  { id: "chem", name: "Chemistry", short: "Chemistry", glyph: "pH", color: "#2fb58c" },
+  { id: "bio", name: "Biology", short: "Biology", glyph: "2n", color: "#e0679a" },
 ];
 
 export const SUBJECT_IDS = SUBJECTS.map((s) => s.id);

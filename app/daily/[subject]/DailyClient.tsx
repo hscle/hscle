@@ -16,33 +16,32 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
   const next = SUBJECTS.find((s) => s.id !== subjectId && !dailyFor(attempts, s.id, today));
 
   return (
-    <>
+    <div style={{ ["--accent" as string]: subject.color }}>
       <div className="page-head">
-        <Link href="/" className="muted">
-          ← Today
+        <Link href="/" className="micro back">
+          ← All subjects
         </Link>
-        <h1>
-          {subject.emoji} {subject.name}
-        </h1>
-        <p className="muted">Daily question · one try only</p>
+        <p className="kicker">The daily</p>
+        <h1>{subject.name}</h1>
+        <p className="micro">One try · resets at midnight</p>
       </div>
       {ready && <QuestionCard key={`${question.id}-${today}`} question={question} mode="daily" previous={previous} />}
       {ready && previous && (
         <div className="after">
           {next ? (
             <Link href={`/daily/${next.id}/`} className="btn btn-primary">
-              Next: {next.short} →
+              Next · {next.short} →
             </Link>
           ) : (
             <Link href="/" className="btn btn-primary">
-              All done for today 🎉
+              All done for today
             </Link>
           )}
           <Link href={`/practice/?subject=${subjectId}`} className="btn">
-            Practise more {subject.short}
+            Practise {subject.short}
           </Link>
         </div>
       )}
-    </>
+    </div>
   );
 }

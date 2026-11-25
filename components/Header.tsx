@@ -21,7 +21,7 @@ export function Header() {
     <header className="header">
       <div className="header-inner">
         <Link href="/" className="logo">
-          HSC<span>LE</span>
+          HSC<i>LE</i>
         </Link>
         <nav className="nav">
           {NAV.map((n) => (
@@ -31,16 +31,19 @@ export function Header() {
           ))}
         </nav>
         <div className="header-right">
-          <span className={`chip streak ${activeToday ? "lit" : ""}`} title={activeToday ? "Streak kept today" : "Answer a daily question to keep your streak"}>
-            🔥 {ready ? current : "–"}
+          <span
+            className={`pill streak-pill ${activeToday ? "lit" : ""}`}
+            title={activeToday ? "Streak kept today" : "Answer a daily question to keep your streak"}
+          >
+            <span className="flame" /> {ready ? current : "–"}
           </span>
           {supabaseEnabled &&
             (user ? (
-              <Link href="/account/" className="chip">
+              <Link href="/account/" className="pill">
                 {profile?.username ?? "Account"}
               </Link>
             ) : (
-              <Link href="/login/" className="btn btn-small">
+              <Link href="/login/" className="pill">
                 Sign in
               </Link>
             ))}

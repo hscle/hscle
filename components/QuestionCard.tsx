@@ -37,11 +37,12 @@ export function QuestionCard({
   return (
     <article className="card question" style={{ ["--accent" as string]: subject?.color }}>
       <div className="q-meta">
-        <span className="tag" style={{ background: subject?.color }}>
-          {subject?.emoji} {subject?.short}
+        <span className="micro">
+          <span className="dot" />
+          {subject?.short}
         </span>
-        <span className="muted">{question.topic}</span>
-        <span className="muted">· {DIFFICULTY[question.difficulty]}</span>
+        <span className="micro">{question.topic}</span>
+        <span className="micro">{DIFFICULTY[question.difficulty]}</span>
       </div>
       <Rich text={question.prompt} className="q-prompt" />
       <div className="options" role="radiogroup">
@@ -71,22 +72,27 @@ export function QuestionCard({
         })}
       </div>
       {!done && (
-        <button type="button" className="btn btn-primary" disabled={picked === null} onClick={submit}>
-          Check answer
-        </button>
-      )}
-      {done && (
-        <div className={`verdict ${result.correct ? "good" : "bad"}`}>
-          {result.correct ? "✅ Correct!" : `❌ Not quite. The answer is ${LETTERS[question.answer]}.`}
+        <div className="actions">
+          <button type="button" className="btn btn-primary" disabled={picked === null} onClick={submit}>
+            Check answer
+          </button>
         </div>
       )}
       {done && (
+        <p className="verdict">
+          {result.correct ? "Correct." : "Not quite."}
+          <span className={`micro ${result.correct ? "good" : "bad"}`}>
+            {result.correct ? "Nicely done" : `The answer is ${LETTERS[question.answer]}`}
+          </span>
+        </p>
+      )}
+      {done && (
         <section className="solution">
-          <h3>Worked solution</h3>
+          <div className="micro">Worked solution</div>
           <Rich text={question.solution} />
           {question.commonMistake && (
             <div className="mistake">
-              <strong>Common mistake</strong>
+              <div className="micro">Common mistake</div>
               <Rich text={question.commonMistake} />
             </div>
           )}

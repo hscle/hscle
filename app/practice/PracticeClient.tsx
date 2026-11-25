@@ -40,10 +40,11 @@ export function PracticeClient() {
   };
 
   return (
-    <>
+    <div style={{ ["--accent" as string]: getSubject(subject)?.color }}>
       <div className="page-head">
+        <p className="kicker">The</p>
         <h1>Practice bank</h1>
-        <p className="muted">Unlimited practice with worked solutions. Questions you haven&apos;t got right yet come first.</p>
+        <p className="micro">Unanswered questions first · worked solutions</p>
       </div>
       <div className="filters">
         <select
@@ -90,8 +91,8 @@ export function PracticeClient() {
       {!q && <div className="card">No questions match those filters yet.</div>}
       {q && ready && (
         <>
-          <p className="muted small">
-            Question {(index % pool.length) + 1} of {pool.length}
+          <p className="micro counter">
+            {(index % pool.length) + 1} / {pool.length}
           </p>
           <QuestionCard key={`${q.id}-${index}`} question={q} mode="practice" onAnswered={() => setAnswered(true)} />
           <div className="after">
@@ -108,6 +109,6 @@ export function PracticeClient() {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }

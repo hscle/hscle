@@ -16,21 +16,22 @@ export default function ProgressPage() {
   return (
     <>
       <div className="page-head">
-        <h1>Your progress</h1>
-        {!user && <p className="muted">You&apos;re playing as a guest, so progress is saved on this device only.</p>}
+        <p className="kicker">Your</p>
+        <h1>Progress</h1>
+        {!user && <p className="micro">Guest mode · saved on this device</p>}
       </div>
       <div className="stats-row">
         <div className="stat">
-          <div className="stat-num">🔥 {current}</div>
-          <div className="stat-label">current streak</div>
+          <div className="stat-num">{current}</div>
+          <div className="stat-label micro">current streak</div>
         </div>
         <div className="stat">
           <div className="stat-num">{best}</div>
-          <div className="stat-label">best streak</div>
+          <div className="stat-label micro">best streak</div>
         </div>
         <div className="stat">
           <div className="stat-num">{total ? Math.round((correct / total) * 100) : 0}%</div>
-          <div className="stat-label">
+          <div className="stat-label micro">
             accuracy ({correct}/{total})
           </div>
         </div>
@@ -44,10 +45,11 @@ export default function ProgressPage() {
           return (
             <div key={s.subject} className="card" style={{ ["--accent" as string]: sub.color }}>
               <div className="subject-name">
-                {sub.emoji} {sub.short}
+                <span className="dot" />
+                {sub.short}
               </div>
               {s.accuracy === null ? (
-                <p className="muted small">Not started yet</p>
+                <p className="micro">Not started</p>
               ) : (
                 <>
                   <div className="bar">
