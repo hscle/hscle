@@ -38,14 +38,14 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
         <div className="after">
           {next ? (
             <Link href={`/daily/${next.id}/`} className="btn btn-primary">
-              Next: {next.short} →
+              Next: {next.short}
             </Link>
           ) : (
             <Link href="/" className="btn btn-primary">
               All done for today
             </Link>
           )}
-          <Link href="/archive/" className="btn">
+          <Link href="/archive/" className="btn btn-ghost">
             Past questions
           </Link>
         </div>

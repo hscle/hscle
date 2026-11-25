@@ -1,10 +1,10 @@
 import type { Group, GroupId, Subject, SubjectId } from "./types";
 
 export const GROUPS: Group[] = [
-  { id: "maths", name: "Mathematics", color: "#2f6bed" },
-  { id: "science", name: "Science", color: "#0f9d74" },
-  { id: "english", name: "English", color: "#8a4ff0" },
-  { id: "hsie", name: "HSIE", color: "#d9822b" },
+  { id: "maths", name: "Mathematics", color: "var(--maths)" },
+  { id: "science", name: "Science", color: "var(--science)" },
+  { id: "english", name: "English", color: "var(--english)" },
+  { id: "hsie", name: "HSIE", color: "var(--hsie)" },
 ];
 
 const groupColor = (g: GroupId) => GROUPS.find((x) => x.id === g)!.color;

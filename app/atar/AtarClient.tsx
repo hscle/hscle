@@ -61,7 +61,7 @@ export function AtarClient() {
 
   return (
     <div className="narrow-col">
-      <Band accent="var(--gold)" icon={<GaugeIcon />} title="ATAR Calculator">
+      <Band accent="var(--flame)" icon={<GaugeIcon />} title="ATAR Calculator">
         Enter your HSC marks to estimate your ATAR. It uses UAC&apos;s official {DATA_YEAR} scaling data and the same rule
         UAC uses: your best 2 units of English plus your best 8 other units.
       </Band>

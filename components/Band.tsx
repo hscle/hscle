@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** Coloured page header: an icon tile, optional breadcrumbs, the h1 and a short line under it. */
+/** Quiet page header: an icon tile, optional breadcrumbs, the h1 and a short line under it. */
 export function Band({
   accent,
   icon,
@@ -17,14 +17,14 @@ export function Band({
 }) {
   return (
     <div className="band" style={{ ["--accent" as string]: accent }}>
-      <span className="glyph big" aria-hidden="true">
-        {icon}
-      </span>
-      <div>
-        {crumbs && <div className="crumbs">{crumbs}</div>}
+      {crumbs && <div className="crumbs">{crumbs}</div>}
+      <div className="band-title">
+        <span className="glyph big" aria-hidden="true">
+          {icon}
+        </span>
         <h1>{title}</h1>
-        {children && <p className="muted">{children}</p>}
       </div>
+      {children && <p className="muted">{children}</p>}
     </div>
   );
 }
