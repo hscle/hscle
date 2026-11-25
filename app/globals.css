@@ -400,6 +400,7 @@ a.cal-cell:hover { border-color: var(--line-strong); background: var(--surface);
 .atar-row .scaled { color: var(--ink); font-weight: 500; }
 .atar-row .scaled .small { display: block; font-weight: 400; font-size: 0.75rem; }
 .atar-row .scaled .atar-err { color: var(--bad-ink); }
+.atar-warn { color: var(--bad-ink); }
 .atar-row .mark input.invalid { border-color: var(--bad); }
 .atar-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
 .atar-result { padding: 1.5rem; }
