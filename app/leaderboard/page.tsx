@@ -32,9 +32,10 @@ export default function LeaderboardPage() {
   return (
     <>
       <div className="page-head">
-        <p className="kicker">This week&apos;s</p>
-        <h1>Leaderboard</h1>
-        <p className="micro">Correct daily answers since Monday {weekStart(today)} · ties go to the longer streak</p>
+        <h1>Weekly leaderboard</h1>
+        <p className="muted">
+          Ranked by correct daily answers since Monday {weekStart(today)}. Ties go to the longer streak.
+        </p>
       </div>
       {ready && (
         <div className="card">

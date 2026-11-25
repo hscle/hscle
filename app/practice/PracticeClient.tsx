@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { QUESTIONS } from "@/lib/questions";
 import { useStore } from "@/lib/store";
-import { getSubject, SUBJECTS } from "@/lib/subjects";
+import { getSubject, GROUPS, SUBJECTS } from "@/lib/subjects";
 import type { SubjectId } from "@/lib/types";
 
 export function PracticeClient() {
@@ -40,11 +40,10 @@ export function PracticeClient() {
   };
 
   return (
-    <div style={{ ["--accent" as string]: getSubject(subject)?.color }}>
+    <div className="narrow-col" style={{ ["--accent" as string]: getSubject(subject)?.color }}>
       <div className="page-head">
-        <p className="kicker">The</p>
         <h1>Practice bank</h1>
-        <p className="micro">Unanswered questions first · worked solutions</p>
+        <p className="muted">Unlimited questions with worked solutions. Ones you haven&apos;t got right yet come first.</p>
       </div>
       <div className="filters">
         <select
@@ -55,10 +54,14 @@ export function PracticeClient() {
             reset();
           }}
         >
-          {SUBJECTS.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
+          {GROUPS.filter((g) => SUBJECTS.some((s) => s.group === g.id)).map((g) => (
+            <optgroup key={g.id} label={g.name}>
+              {SUBJECTS.filter((s) => s.group === g.id).map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
         <select
@@ -91,7 +94,7 @@ export function PracticeClient() {
       {!q && <div className="card">No questions match those filters yet.</div>}
       {q && ready && (
         <>
-          <p className="micro counter">
+          <p className="label counter">
             {(index % pool.length) + 1} / {pool.length}
           </p>
           <QuestionCard key={`${q.id}-${index}`} question={q} mode="practice" onAnswered={() => setAnswered(true)} />

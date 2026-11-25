@@ -16,28 +16,27 @@ export default function ProgressPage() {
   return (
     <>
       <div className="page-head">
-        <p className="kicker">Your</p>
-        <h1>Progress</h1>
-        {!user && <p className="micro">Guest mode · saved on this device</p>}
+        <h1>Your progress</h1>
+        {!user && <p className="muted">You&apos;re playing as a guest, so progress is saved on this device only.</p>}
       </div>
       <div className="stats-row">
         <div className="stat">
           <div className="stat-num">{current}</div>
-          <div className="stat-label micro">current streak</div>
+          <div className="stat-label label">current streak</div>
         </div>
         <div className="stat">
           <div className="stat-num">{best}</div>
-          <div className="stat-label micro">best streak</div>
+          <div className="stat-label label">best streak</div>
         </div>
         <div className="stat">
           <div className="stat-num">{total ? Math.round((correct / total) * 100) : 0}%</div>
-          <div className="stat-label micro">
+          <div className="stat-label label">
             accuracy ({correct}/{total})
           </div>
         </div>
       </div>
 
-      <h2>By subject</h2>
+      <h2 className="section-title">By subject</h2>
       <div className="grid">
         {stats.map((s) => {
           const sub = getSubject(s.subject)!;
@@ -49,7 +48,7 @@ export default function ProgressPage() {
                 {sub.short}
               </div>
               {s.accuracy === null ? (
-                <p className="micro">Not started</p>
+                <p className="muted small">Not started yet</p>
               ) : (
                 <>
                   <div className="bar">
@@ -66,11 +65,11 @@ export default function ProgressPage() {
         })}
       </div>
 
-      <h2>Achievements</h2>
+      <h2 className="section-title">Achievements</h2>
       <div className="badges">
         {badges.map((b) => (
           <div key={b.id} className={`badge ${b.earned ? "earned" : ""}`} title={b.description}>
-            <div className="badge-emoji">{b.emoji}</div>
+            <div className="badge-icon" aria-hidden="true" />
             <div className="badge-name">{b.name}</div>
             <div className="muted small">{b.description}</div>
           </div>

@@ -5,7 +5,7 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { dailyQuestion } from "@/lib/daily";
 import { dailyFor } from "@/lib/progress";
 import { useStore } from "@/lib/store";
-import { getSubject, SUBJECTS } from "@/lib/subjects";
+import { getGroup, getSubject, SUBJECTS } from "@/lib/subjects";
 import type { SubjectId } from "@/lib/types";
 
 export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
@@ -16,21 +16,22 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
   const next = SUBJECTS.find((s) => s.id !== subjectId && !dailyFor(attempts, s.id, today));
 
   return (
-    <div style={{ ["--accent" as string]: subject.color }}>
+    <div className="narrow-col" style={{ ["--accent" as string]: subject.color }}>
       <div className="page-head">
-        <Link href="/" className="micro back">
-          ← All subjects
-        </Link>
-        <p className="kicker">The daily</p>
+        <div className="crumbs">
+          <Link href="/">Today</Link>
+          <span aria-hidden="true">/</span>
+          <span>{getGroup(subject.group).name}</span>
+        </div>
         <h1>{subject.name}</h1>
-        <p className="micro">One try · resets at midnight</p>
+        <p className="muted">Daily question. You get one try, and a new one arrives at midnight.</p>
       </div>
       {ready && <QuestionCard key={`${question.id}-${today}`} question={question} mode="daily" previous={previous} />}
       {ready && previous && (
         <div className="after">
           {next ? (
             <Link href={`/daily/${next.id}/`} className="btn btn-primary">
-              Next · {next.short} →
+              Next: {next.short} →
             </Link>
           ) : (
             <Link href="/" className="btn btn-primary">

@@ -1,13 +1,37 @@
-import type { Subject, SubjectId } from "./types";
+import type { Group, GroupId, Subject, SubjectId } from "./types";
+
+export const GROUPS: Group[] = [
+  { id: "maths", name: "Mathematics", color: "#2f6bed" },
+  { id: "science", name: "Science", color: "#0f9d74" },
+  { id: "english", name: "English", color: "#8a4ff0" },
+  { id: "hsie", name: "HSIE", color: "#d9822b" },
+];
+
+const groupColor = (g: GroupId) => GROUPS.find((x) => x.id === g)!.color;
 
 export const SUBJECTS: Subject[] = [
-  { id: "ms2", name: "Mathematics Standard 2", short: "Standard 2", glyph: "%", color: "#3b9fd9" },
-  { id: "ma", name: "Mathematics Advanced", short: "Advanced", glyph: "f′", color: "#5b7cfa" },
-  { id: "me1", name: "Mathematics Extension 1", short: "Extension 1", glyph: "∑", color: "#9b6cf0" },
-  { id: "phys", name: "Physics", short: "Physics", glyph: "λ", color: "#ec8a4b" },
-  { id: "chem", name: "Chemistry", short: "Chemistry", glyph: "pH", color: "#2fb58c" },
-  { id: "bio", name: "Biology", short: "Biology", glyph: "2n", color: "#e0679a" },
+  { id: "ms2", group: "maths", name: "Mathematics Standard 2", short: "Standard 2", glyph: "%", color: groupColor("maths") },
+  { id: "ma", group: "maths", name: "Mathematics Advanced", short: "Advanced", glyph: "f′", color: groupColor("maths") },
+  { id: "me1", group: "maths", name: "Mathematics Extension 1", short: "Extension 1", glyph: "∑", color: groupColor("maths") },
+  { id: "phys", group: "science", name: "Physics", short: "Physics", glyph: "λ", color: groupColor("science") },
+  { id: "chem", group: "science", name: "Chemistry", short: "Chemistry", glyph: "pH", color: groupColor("science") },
+  { id: "bio", group: "science", name: "Biology", short: "Biology", glyph: "2n", color: groupColor("science") },
 ];
+
+/** Shown on the home page so students can see what's coming. No questions yet. */
+export const COMING_SOON: { name: string; group: GroupId }[] = [
+  { name: "English Standard", group: "english" },
+  { name: "English Advanced", group: "english" },
+  { name: "English Extension 1", group: "english" },
+  { name: "Economics", group: "hsie" },
+  { name: "Business Studies", group: "hsie" },
+  { name: "Legal Studies", group: "hsie" },
+  { name: "Modern History", group: "hsie" },
+];
+
+export function getGroup(id: GroupId): Group {
+  return GROUPS.find((g) => g.id === id)!;
+}
 
 export const SUBJECT_IDS = SUBJECTS.map((s) => s.id);
 

@@ -1,7 +1,17 @@
 export type SubjectId = "ms2" | "ma" | "me1" | "phys" | "chem" | "bio";
 
+export type GroupId = "maths" | "science" | "english" | "hsie";
+
+export interface Group {
+  id: GroupId;
+  name: string;
+  /** CSS colour shared by every subject in the group. */
+  color: string;
+}
+
 export interface Subject {
   id: SubjectId;
+  group: GroupId;
   name: string;
   short: string;
   /** Short symbol shown inside the subject's circle, e.g. "∑". */

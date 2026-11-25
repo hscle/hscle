@@ -37,12 +37,9 @@ export function QuestionCard({
   return (
     <article className="card question" style={{ ["--accent" as string]: subject?.color }}>
       <div className="q-meta">
-        <span className="micro">
-          <span className="dot" />
-          {subject?.short}
-        </span>
-        <span className="micro">{question.topic}</span>
-        <span className="micro">{DIFFICULTY[question.difficulty]}</span>
+        <span className="chip accent">{subject?.short}</span>
+        <span className="chip">{question.topic}</span>
+        <span className="chip">{DIFFICULTY[question.difficulty]}</span>
       </div>
       <Rich text={question.prompt} className="q-prompt" />
       <div className="options" role="radiogroup">
@@ -72,27 +69,25 @@ export function QuestionCard({
         })}
       </div>
       {!done && (
-        <div className="actions">
+        <div>
           <button type="button" className="btn btn-primary" disabled={picked === null} onClick={submit}>
             Check answer
           </button>
         </div>
       )}
       {done && (
-        <p className="verdict">
-          {result.correct ? "Correct." : "Not quite."}
-          <span className={`micro ${result.correct ? "good" : "bad"}`}>
-            {result.correct ? "Nicely done" : `The answer is ${LETTERS[question.answer]}`}
-          </span>
-        </p>
+        <div className={`verdict ${result.correct ? "good" : "bad"}`} role="status">
+          <span className={`tile ${result.correct ? "good" : "bad"}`} aria-hidden="true" />
+          {result.correct ? "Correct. Nicely done." : `Not quite. The answer is ${LETTERS[question.answer]}.`}
+        </div>
       )}
       {done && (
         <section className="solution">
-          <div className="micro">Worked solution</div>
+          <h3>Worked solution</h3>
           <Rich text={question.solution} />
           {question.commonMistake && (
             <div className="mistake">
-              <div className="micro">Common mistake</div>
+              <div className="label">Common mistake</div>
               <Rich text={question.commonMistake} />
             </div>
           )}
