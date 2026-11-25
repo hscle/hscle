@@ -47,12 +47,28 @@ export function AtarClient() {
     }
   }, [rows, loaded]);
 
+  // A mark is only used when it is a real number within the course's range. Anything else is flagged on its row
+  // instead of being silently cut short or clamped to full marks.
+  const markError = (r: Row): string | null => {
+    const c = getCourse(r.course);
+    const v = r.mark.trim();
+    if (!c || v === "") return null;
+    const n = Number(v);
+    if (!Number.isFinite(n)) return "Enter a number";
+    if (n > maxMark(c)) return `Max is ${maxMark(c)}`;
+    return null;
+  };
+  const badRows = rows.filter((r) => markError(r));
   const entries: Entry[] = rows
-    .filter((r) => r.course && r.mark.trim() !== "")
+    .filter((r) => r.course && r.mark.trim() !== "" && !markError(r))
     .map((r) => ({ course: r.course, mark: Number(r.mark) }));
   const result = useMemo(() => estimate(entries), [JSON.stringify(entries)]); // eslint-disable-line react-hooks/exhaustive-deps
   const units = entries.reduce((n, e) => n + (getCourse(e.course)?.units ?? 0), 0);
-  const ready = result.problems.length === 0;
+  const problems = [
+    ...badRows.map((r) => `${r.course} is marked out of ${maxMark(getCourse(r.course)!)}. Check that mark.`),
+    ...result.problems,
+  ];
+  const ready = problems.length === 0;
 
   const update = (id: number, patch: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   const add = () => setRows((rs) => [...rs, { id: Math.max(0, ...rs.map((r) => r.id)) + 1, course: "", mark: "" }]);
@@ -75,7 +91,8 @@ export function AtarClient() {
         </div>
         {rows.map((r) => {
           const c = getCourse(r.course);
-          const res = result.rows.find((x) => x.course.name === r.course && r.mark.trim() !== "");
+          const err = markError(r);
+          const res = err ? undefined : result.rows.find((x) => x.course.name === r.course && r.mark.trim() !== "");
           return (
             <div key={r.id} className="atar-row">
               <select
@@ -95,18 +112,16 @@ export function AtarClient() {
                 <input
                   aria-label={c ? `HSC mark out of ${maxMark(c)}` : "HSC mark"}
                   inputMode="decimal"
-                  placeholder="–"
+                  placeholder="Mark"
+                  aria-invalid={err ? true : undefined}
+                  className={err ? "invalid" : undefined}
                   value={r.mark}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/[^0-9.]/g, "");
-                    if (c && Number(v) > maxMark(c)) return;
-                    update(r.id, { mark: v });
-                  }}
+                  onChange={(e) => update(r.id, { mark: e.target.value.replace(/[^0-9.]/g, "").slice(0, 5) })}
                 />
                 <span className="muted small">/{c ? maxMark(c) : 100}</span>
               </label>
               <span className={`num scaled ${res && res.countedUnits === 0 ? "muted" : ""}`}>
-                {res ? fmt(res.scaled) : "–"}
+                {err ? <span className="small atar-err">{err}</span> : res ? fmt(res.scaled) : "–"}
                 {res && res.countedUnits === 0 && <span className="small"> not counted</span>}
                 {res && res.countedUnits > 0 && res.countedUnits < res.course.units && (
                   <span className="small muted"> half counted</span>
@@ -141,7 +156,7 @@ export function AtarClient() {
           <>
             <span className="label">Estimated ATAR</span>
             <div className="atar-big num muted">–</div>
-            {result.problems.map((p) => (
+            {problems.map((p) => (
               <p key={p} className="muted small" style={{ margin: "0.25rem 0 0" }}>
                 {p}
               </p>
