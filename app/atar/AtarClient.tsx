@@ -63,12 +63,12 @@ export function AtarClient() {
     .filter((r) => r.course && r.mark.trim() !== "" && !markError(r))
     .map((r) => ({ course: r.course, mark: Number(r.mark) }));
   const result = useMemo(() => estimate(entries), [JSON.stringify(entries)]); // eslint-disable-line react-hooks/exhaustive-deps
-  const units = entries.reduce((n, e) => n + (getCourse(e.course)?.units ?? 0), 0);
+  const units = result.units;
   const chosen = rows.map((r) => r.course).filter(Boolean);
   const missingAlso = chosen
     .filter((c) => ALSO_SITS[c])
     .filter((c) => !entries.some((e) => e.course === ALSO_SITS[c]))
-    .map((c) => `Add your ${ALSO_SITS[c]} mark. ${c} students also get a result in ${ALSO_SITS[c]}, and it counts as 1 more unit.`);
+    .map((c) => `Add your ${ALSO_SITS[c]} mark. ${c} students also get a result in ${ALSO_SITS[c]}, and it counts as ${c.startsWith("Mathematics") ? "2 more units" : "1 more unit"}.`);
   const notes = prerequisiteNotes(chosen);
   const markProblems = badRows.map((r) => `${r.course} is marked out of ${maxMark(getCourse(r.course)!)}. Check that mark.`);
   const warnings = [...missingAlso, ...result.problems, ...notes];
@@ -126,7 +126,7 @@ export function AtarClient() {
                 {COURSES.map((o) => (
                   <option key={o.name} value={o.name} disabled={taken.has(o.name) && o.name !== r.course}>
                     {o.name}
-                    {o.units === 1 ? " (1 unit)" : ""}
+                    {o.name === "Mathematics Extension 1" ? " (1 unit, 2 with Ext 2)" : o.units === 1 ? " (1 unit)" : ""}
                   </option>
                 ))}
               </select>
@@ -144,8 +144,9 @@ export function AtarClient() {
               </label>
               <span className={`num scaled ${res && res.countedUnits === 0 ? "muted" : ""}`}>
                 {err ? <span className="small atar-err">{err}</span> : res ? fmt(res.scaled) : "–"}
-                {res && res.countedUnits === 0 && <span className="small"> not counted</span>}
-                {res && res.countedUnits > 0 && res.countedUnits < res.course.units && (
+                {res && res.countedUnits === 0 && <span className="small"> {res.excluded ?? "not counted"}</span>}
+                {res && !res.excluded && res.units > res.course.units && <span className="small muted"> counts as 2 units</span>}
+                {res && res.countedUnits > 0 && res.countedUnits < res.units && (
                   <span className="small muted"> half counted</span>
                 )}
               </span>
@@ -159,7 +160,7 @@ export function AtarClient() {
           <button type="button" className="btn btn-small" onClick={add}>
             + Add course
           </button>
-          <span className="small muted num">{units} units entered</span>
+          <span className="small muted num">{units} units counting</span>
         </div>
       </div>
 
@@ -208,7 +209,7 @@ export function AtarClient() {
           </li>
           <li>
             UAC adds your best 2 units of English and your best 8 other units of scaled marks. That&apos;s your aggregate,
-            out of 500. Part of a 2-unit course can count, just like the real thing. Maths Extension 2 students also get a Maths Extension 1 result, so enter both.
+            out of 500. Part of a 2-unit course can count, just like the real thing. Maths Extension 2 students also get a Maths Extension 1 result, so enter both: with Extension 2, UAC counts Extension 1 as 2 units (its mark doubled) and leaves out Mathematics Advanced. An extension course only counts if you also did its main course.
           </li>
           <li>The aggregate becomes an ATAR using UAC&apos;s published table of aggregates for each ATAR.</li>
         </ol>
