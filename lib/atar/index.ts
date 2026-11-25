@@ -1,4 +1,4 @@
-import { AGGREGATE_TO_ATAR, DATA_YEAR, TABLE_A3 } from "./data";
+import { AGGREGATE_TO_ATAR, BANDS, DATA_YEAR, TABLE_A3 } from "./data";
 
 export { DATA_YEAR };
 
@@ -14,6 +14,58 @@ export interface Course {
 /** Every "Extension" course is 1 unit, except Maths Extension 2, which is 2 units (taken with Extension 1). */
 const isOneUnit = (name: string) => name.includes("Extension") && name !== "Mathematics Extension 2";
 
+/** Inverse of the standard normal CDF (Acklam's approximation, accurate to about 1e-9). */
+function normInv(p: number): number {
+  const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.357751867269, -30.66479806614716, 2.506628277459239];
+  const b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+  const c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+  const q0 = Math.min(Math.max(p, 1e-6), 1 - 1e-6);
+  if (q0 < 0.02425) {
+    const q = Math.sqrt(-2 * Math.log(q0));
+    return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  }
+  const q = q0 - 0.5;
+  const r = q * q;
+  return ((((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q) / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+}
+
+/**
+ * Curve points below the 25th percentile, where UAC's Table A3 stops.
+ *
+ * With NESA's band results for the course we know what share of students got below each band
+ * boundary (50, 60, 70, 80, 90), so we place a mark at its real percentile in the course and read off
+ * the scaled mark at the same percentile (scaled marks below P25 follow a normal curve with the course's
+ * scaled mean and sd, anchored to UAC's P25). Without band data we fall back to continuing down from
+ * P25 at the rate scaled sd / HSC sd. Per-unit marks throughout (0-50).
+ */
+function lowTail(name: string, h: number[], s: number[]): [number, number][] {
+  const [hP25, sP25, ssd] = [h[7], s[7], s[1]];
+  const bands = BANDS[name];
+  if (!bands) {
+    const k = s[1] / h[1];
+    const xZero = hP25 - sP25 / k;
+    return xZero > 0 ? [[0, 0], [xZero, 0]] : [[0, sP25 - hP25 * k]];
+  }
+  // Cumulative % of students below each band boundary under P25, then UAC's P25 itself (25%).
+  // Marks in between are placed by straight-line interpolation of those percentiles.
+  const edges = bands.length === 6 ? [25, 30, 35, 40, 45] : [25, 35, 45];
+  const anchors: [number, number][] = [[0, 0]];
+  let cum = 0;
+  edges.forEach((e, i) => {
+    cum += bands[i];
+    if (e < hP25 && cum < 25) anchors.push([e, cum]);
+  });
+  anchors.push([hP25, 25]);
+  const out: [number, number][] = [];
+  for (let x = 0; x < hP25; x += 0.5) {
+    const p = interp(anchors, x) / 100;
+    const y = p <= 0 ? 0 : Math.max(0, sP25 + (normInv(p) - normInv(0.25)) * ssd);
+    out.push([x, Math.min(y, sP25)]);
+  }
+  return out;
+}
+
 function parse(): Course[] {
   return TABLE_A3.trim()
     .split("\n")
@@ -22,14 +74,7 @@ function parse(): Course[] {
       const h = hsc.split(",").map(Number);
       const s = scaled.split(",").map(Number);
       // indices: 0 = mean, 1 = sd, 2 = max, 3 = P99, 4 = P90, 5 = P75, 6 = P50, 7 = P25
-      // Below the 25th percentile UAC publishes no points, so continue down from P25 at the rate that
-      // matches the two distributions' spreads (scaled sd / HSC sd), never below 0. A straight line to
-      // (0, 0) would give low marks far too much credit in courses whose HSC marks are bunched up.
-      const k = s[1] / h[1];
-      const raw: [number, number][] = [];
-      const xZero = h[7] - s[7] / k;
-      if (xZero > 0) raw.push([0, 0], [xZero, 0]);
-      else raw.push([0, s[7] - h[7] * k]);
+      const raw: [number, number][] = lowTail(name, h, s);
       for (const i of [7, 6, 5, 4, 3, 2]) raw.push([h[i], s[i]]);
       raw.push([50, s[2]]);
       // Keep x strictly increasing; on ties keep the higher scaled value.
