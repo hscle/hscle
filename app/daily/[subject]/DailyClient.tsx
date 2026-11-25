@@ -19,7 +19,7 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
     <div className="narrow-col" style={{ ["--accent" as string]: subject.color }}>
       <div className="page-head">
         <div className="crumbs">
-          <Link href="/">Today</Link>
+          <Link href="/">Daily Questions</Link>
           <span aria-hidden="true">/</span>
           <span>{getGroup(subject.group).name}</span>
         </div>
@@ -38,8 +38,8 @@ export function DailyClient({ subjectId }: { subjectId: SubjectId }) {
               All done for today
             </Link>
           )}
-          <Link href={`/practice/?subject=${subjectId}`} className="btn">
-            Practise {subject.short}
+          <Link href="/archive/" className="btn">
+            Past questions
           </Link>
         </div>
       )}

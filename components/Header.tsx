@@ -9,9 +9,9 @@ import { supabaseEnabled } from "@/lib/supabase";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
-  { href: "/", label: "Today" },
-  { href: "/practice/", label: "Practice" },
-  { href: "/leaderboard/", label: "Leaderboard" },
+  { href: "/", label: "Daily Questions" },
+  { href: "/archive/", label: "Archive" },
+  { href: "/atar/", label: "ATAR Calculator" },
 ];
 
 export function Header() {

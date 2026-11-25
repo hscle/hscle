@@ -59,14 +59,14 @@ export default function LoginPage() {
       <h1>{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
       <p className="muted small">
         {mode === "signup"
-          ? "Save your streak across devices and join the leaderboard. Anything you've done as a guest on this device comes with you."
+          ? "Save your streak across devices. Anything you've done as a guest on this device comes with you."
           : "Sign in to keep your streak going."}
       </p>
       <form onSubmit={submit} className="form">
         {mode === "signup" && (
           <>
             <label>
-              Username <span className="muted small">(shown on the leaderboard, so don&apos;t use your full name)</span>
+              Username <span className="muted small">(don&apos;t use your full name)</span>
               <input value={username} onChange={(e) => setUsername(e.target.value)} required autoComplete="username" />
             </label>
             <label>

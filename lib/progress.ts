@@ -1,15 +1,5 @@
-import { addDays, weekStart } from "./dates";
+import { addDays } from "./dates";
 import type { Attempt, SubjectId } from "./types";
-
-/**
- * Leaderboard score: correct daily answers in the current week (Monday to Sunday,
- * Sydney time). Everyone gets the same daily questions, so this is a fair race.
- * Keep in sync with weekly_leaderboard() in supabase/schema.sql.
- */
-export function weeklyScore(attempts: Attempt[], today: string): number {
-  const start = weekStart(today);
-  return attempts.filter((a) => a.mode === "daily" && a.correct && a.day >= start).length;
-}
 
 /** A day counts towards the streak if at least one daily question was answered. */
 export function streaks(attempts: Attempt[], today: string): { current: number; best: number; activeToday: boolean } {

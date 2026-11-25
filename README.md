@@ -1,6 +1,6 @@
 # HSCLE
 
-The daily HSC quiz for NSW students: one exam-style question per subject every day, a practice bank with worked solutions, streaks and a weekly leaderboard.
+The daily HSC quiz for NSW students: one exam-style question per subject every day with worked solutions, an archive of past days, streaks and an ATAR calculator.
 
 Built with Next.js (static export) + TypeScript, Supabase for accounts and data, hosted on Cloudflare Pages.
 
@@ -9,10 +9,10 @@ Built with Next.js (static export) + TypeScript, Supabase for accounts and data,
 | Feature | Where |
 | --- | --- |
 | Daily question per subject (same for everyone, flips at midnight Sydney time, one try) | `app/daily/[subject]`, `lib/daily.ts` |
-| Practice bank with subject, topic and difficulty filters | `app/practice` |
+| Archive of every past daily question since launch (answers there don't affect the streak) | `app/archive` |
 | Worked solution and "common mistake" for every question | `lib/questions/*.ts` |
 | Daily streaks | `lib/progress.ts` |
-| Weekly leaderboard (correct daily answers since Monday, ties go to the longer streak) | `app/leaderboard`, `weekly_leaderboard()` in `supabase/schema.sql` |
+| ATAR calculator using UAC's 2025 scaling report (Tables A3, A9, 3.2). Update `lib/atar/data.ts` each February when UAC publishes the new report | `app/atar`, `lib/atar` |
 | Accounts with email verification, username and optional school | `app/login`, Supabase Auth |
 | Guest mode: works with no account, progress saved in the browser and carried over on first sign-in | `lib/store.tsx` |
 | Shareable daily result (🟩🟥⬜ grid) for socials and group chats | `app/page.tsx` |

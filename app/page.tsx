@@ -60,7 +60,7 @@ export default function Home() {
         <div>
           <p className="date">{ready ? longDate(today) : " "}</p>
           <h1>
-            Today&apos;s <em>questions</em>
+            Daily <em>questions</em>
           </h1>
           <p className="sub">
             One HSC exam-style question per subject, every day. Get it right, read the worked solution, keep your streak
