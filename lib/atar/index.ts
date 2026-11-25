@@ -21,8 +21,15 @@ function parse(): Course[] {
       const [name, students, hsc, scaled] = line.split("|");
       const h = hsc.split(",").map(Number);
       const s = scaled.split(",").map(Number);
-      // indices: 2 = max, 3 = P99, 4 = P90, 5 = P75, 6 = P50, 7 = P25
-      const raw: [number, number][] = [[0, 0]];
+      // indices: 0 = mean, 1 = sd, 2 = max, 3 = P99, 4 = P90, 5 = P75, 6 = P50, 7 = P25
+      // Below the 25th percentile UAC publishes no points, so continue down from P25 at the rate that
+      // matches the two distributions' spreads (scaled sd / HSC sd), never below 0. A straight line to
+      // (0, 0) would give low marks far too much credit in courses whose HSC marks are bunched up.
+      const k = s[1] / h[1];
+      const raw: [number, number][] = [];
+      const xZero = h[7] - s[7] / k;
+      if (xZero > 0) raw.push([0, 0], [xZero, 0]);
+      else raw.push([0, s[7] - h[7] * k]);
       for (const i of [7, 6, 5, 4, 3, 2]) raw.push([h[i], s[i]]);
       raw.push([50, s[2]]);
       // Keep x strictly increasing; on ties keep the higher scaled value.
@@ -108,8 +115,11 @@ export function estimate(entries: Entry[]): Result {
   const englishUnits = units.filter((u) => u.english);
   const hasMainEnglish = rows.some((r) => r.course.english && r.course.units === 2);
   if (!hasMainEnglish || englishUnits.length < 2)
-    problems.push("Add your English course (Standard, Advanced or EAL/D). UAC has to count 2 units of English.");
-  if (total < 10) problems.push(`Add more courses. An ATAR needs at least 10 units (you have ${total}).`);
+    problems.push("Add your English course (Standard, Advanced or EAL/D). UAC always counts 2 units of English.");
+  if (total < 10)
+    problems.push(
+      `You've entered ${total} units. UAC counts 10, so the missing ${10 - total === 1 ? "unit counts" : "units count"} as 0 here and this ATAR is lower than your real one would be.`,
+    );
 
   const used = new Set<(typeof units)[number]>();
   for (const u of [...englishUnits].sort((a, b) => b.value - a.value).slice(0, 2)) used.add(u);
