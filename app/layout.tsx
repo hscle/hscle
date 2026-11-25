@@ -51,11 +51,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="container">{children}</main>
           <footer className="footer">
-            <nav className="footer-links" aria-label="Question bank">
-              <Link href="/questions/">HSC practice questions</Link>
+            <nav className="footer-links" aria-label="Daily questions">
               {SUBJECTS.map((s) => (
-                <Link key={s.id} href={`/questions/${s.slug}/`}>
-                  {s.searchName}
+                <Link key={s.id} href={`/daily/${s.id}/`}>
+                  Daily {s.searchName} question
                 </Link>
               ))}
               <Link href="/atar/">ATAR calculator</Link>
